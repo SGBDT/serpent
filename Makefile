@@ -1,6 +1,6 @@
 PROJECTNAME = serpent
 
-BINS = $(PROJECTNAME).gb
+BINS = build/$(PROJECTNAME).gb
 
 ifndef GBDK_HOME
 	$(error GBDK_HOME is not set.)
@@ -15,10 +15,17 @@ endif
 CSOURCES := $(wildcard src/*.c)
 ASMSOURCES := $(wildcard src/*.s)
 
-all: $(BINS)
+all: init $(BINS)
+
+init:
+	rm -rf build
+	mkdir build
 
 $(BINS): $(CSOURCES) $(ASMSOURCES)
 	$(LCC) $(LCCFLAGS) -o $@ $(CSOURCES) $(ASMSOURCES)
+
+run: $(BINS)
+	gearboy $(BINS)
 
 clean:
 	rm -f *.o *.lst *.map *.gb *.ihx *.sym *.cdb *.adb *.asm *.noi *.rst
