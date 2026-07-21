@@ -12,6 +12,28 @@
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
 
+      serpent = pkgs.stdenv.mkDerivation {
+        pname = "serpent";
+        version = "0.1.0";
+
+        src = ./.;
+
+        nativeBuildInputs = [
+          gbdk
+        ];
+
+        buildPhase = ''
+          export GBDK_HOME=${gbdk}
+          export PATH=$GBDK_HOME/bin:$PATH
+          make
+        '';
+
+        installPhase = ''
+          mkdir -p $out
+          cp build/serpent.gb $out/
+        '';
+      };
+
       gbdk = pkgs.stdenv.mkDerivation {
         pname = "gbdk";
         version = "4.5.0";
@@ -84,7 +106,18 @@
         '';
       };
     in {
-      packages.default = gb-tools;
+      packages = {
+        default = serpent;
+        gbdk = gbdk;
+        gb-tools = gb-tools;
+      };
+
+      apps.default = {
+        type = "app";
+        program = "${pkgs.writeShellScript "run-serpent" ''
+          exec ${pkgs.gearboy}/bin/gearboy ${serpent}/serpent.gb
+        ''}";
+      };
 
       devShells.default = pkgs.mkShell {
         buildInputs = [
