@@ -56,45 +56,32 @@
         installPhase = ''
           mkdir -p $out
           cp -r . $out
-          wrapProgram $out/bin/lcc --set GBDKDIR "$out/"
+
+          wrapProgram $out/bin/lcc \
+            --set GBDKDIR "$out/"
         '';
       };
 
-      gbtd-src = pkgs.fetchzip {
-        name = "gbtd";
-        url = "https://www.devrs.com/gb/hmgd/gbtd22.zip";
-        sha256 = "sha256-UFvGgSN9clPW68WvVUadM63uvJeJCvGoWKFyI+/yOc8=";
-        stripRoot = false;
-      };
-
-      gbmb-src = pkgs.fetchzip {
-        name = "gbmb";
-        url = "https://www.devrs.com/gb/hmgd/gbmb18.zip";
-        sha256 = "sha256-tS14jkRHMg0yLyEi/RyYNcRZqjHk3mANosI+ZvFmwAM=";
+      gbtd-gbmb-src = pkgs.fetchzip {
+        name = "gbtd-gbmb";
+        url = "https://github.com/gbdk-2020/GBTD_GBMB/releases/download/2.4.5/GBTD_GBMB_release.zip";
+        sha256 = "sha256-zLb5y4DnrYoGmOqr+oc4Id60O3CdF2Xx5qKzy9BeBYM=";
         stripRoot = false;
       };
 
       gb-tools = pkgs.stdenvNoCC.mkDerivation {
         pname = "gbtd-gbmb";
-        version = "unstable";
+        version = "2.4.5";
 
-        srcs = [gbtd-src gbmb-src];
-        sourceRoot = ".";
+        src = gbtd-gbmb-src;
 
-        nativeBuildInputs = [pkgs.makeWrapper pkgs.unzip];
-
-        unpackPhase = ''
-          mkdir -p gbtd gbmb
-          cp -r ${gbtd-src}/* gbtd/
-          cp -r ${gbmb-src}/* gbmb/
-        '';
+        nativeBuildInputs = [pkgs.makeWrapper];
 
         installPhase = ''
-          mkdir -p $out/share/gb-tools/gbtd
-          mkdir -p $out/share/gb-tools/gbmb
+          mkdir -p $out/share/gb-tools/gbtd $out/share/gb-tools/gbmb
 
-          cp -r gbtd/* $out/share/gb-tools/gbtd/
-          cp -r gbmb/* $out/share/gb-tools/gbmb/
+          cp -r GBTD/* $out/share/gb-tools/gbtd/
+          cp -r GBMB/* $out/share/gb-tools/gbmb/
 
           mkdir -p $out/bin
 
@@ -129,6 +116,7 @@
           gbdk
           pkgs.clang-tools
           pkgs.gnumake
+          pkgs.mbake
           pkgs.gearboy
           pkgs.bear
         ];
