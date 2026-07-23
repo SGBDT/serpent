@@ -1,4 +1,4 @@
-# Serpent
+# Orochi
 
 A rhythm game for the original Game Boy.
 

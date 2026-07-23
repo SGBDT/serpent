@@ -12,8 +12,8 @@
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
 
-      serpent = pkgs.stdenv.mkDerivation {
-        pname = "serpent";
+      orochi = pkgs.stdenv.mkDerivation {
+        pname = "orochi";
         version = "0.1.0";
 
         src = ./.;
@@ -30,7 +30,7 @@
 
         installPhase = ''
           mkdir -p $out
-          cp build/serpent.gb $out/
+          cp build/orochi.gb $out/
         '';
       };
 
@@ -94,15 +94,15 @@
       };
     in {
       packages = {
-        default = serpent;
+        default = orochi;
         gbdk = gbdk;
         gb-tools = gb-tools;
       };
 
       apps.default = {
         type = "app";
-        program = "${pkgs.writeShellScript "run-serpent" ''
-          exec ${pkgs.gearboy}/bin/gearboy ${serpent}/serpent.gb
+        program = "${pkgs.writeShellScript "run-orochi" ''
+          exec ${pkgs.gearboy}/bin/gearboy ${orochi}/orochi.gb
         ''}";
       };
 
